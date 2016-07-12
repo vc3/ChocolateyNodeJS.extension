@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>ChocolateyNodeJS.extension</id>
+    <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
+    <version>1.1.2</version>
+    <authors>Bryan Matthews</authors>
+    <owners>Bryan Matthews</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/vc3/Chocolatey-Packages</projectUrl>
+    <iconUrl>https://github.com/chocolatey/chocolatey/raw/master/docs/logo/chocolateyicon.gif</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A chocolatey helper extension for installing node.js applications.
+
+## Install-ChocolateyNodeApplication
+
+Installs a node application from the 'content' folder of a Chocolatey package.
+
+* Copies files from the package's "**content**" folder.
+	- Files are copied to the install `Path`.
+	- Optional exclusion based on `ExcludedDirectories` and `ExcludedFiles`.
+	- **Preserve** or **Purge** files in the destination based on `CopyMode`.
+* Installs module dependencies, via: `npm install --production --no-optional`.
+
+These parameters have default values, so they are optional.
+
+```PowerShell
+Install-ChocolateyNodeApplication 'MyApp'
+```
+
+* `Path`: C:\\ProgramData\\{Name}
+* `ExcludedDirectories`: 'node_modules' *(restored via `npm install`)*
+* `ExcludedFiles`: *.excluded
+* `CopyMode`: Preserve
+
+The defaults can be overridden in **package.json**.
+
+```json
+  "install": {
+    "path": "C:\\ProgramData\\NodeApps\\MyApp",
+    "copyMode": "Purge",
+    "excludedDirectories": "node_modules",
+    "excludedFiles": "*.ignore"
+  }
+```
+
+Specified parameters take precedence.
+
+```PowerShell
+Install-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp -ExcludedDirectories 'data' -ExcludedFiles '*.log' -CopyMode 'Purge'
+```
+
+## Uninstall-ChocolateyNodeApplication
+
+Uninstalls a node application from the 'content' folder of a Chocolatey package.
+
+* Removes files that were copied from the package's "**content**" folder.
+	- Files are removed from the install `Path`.
+
+These parameters have default values, so they are optional.
+
+```PowerShell
+Uninstall-ChocolateyNodeApplication 'MyApp'
+```
+
+* `Path`: C:\\ProgramData\\{Name}
+
+The defaults can be overridden in **package.json**.
+
+```json
+  "install": {
+    "path": "C:\\ProgramData\\NodeApps\\MyApp"
+  }
+```
+
+Specified parameters take precedence.
+
+```PowerShell
+Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
+```
+
+    </description>
+    <releaseNotes>
+## [1.1.2]
+### Changed
+- In 'Uninstall-ChocolateyNodeApplication', fix bug in folder deletion.
+    </releaseNotes>
+    <dependencies>
+      <dependency id="chocolatey" version="0.9.9" />
+      <dependency id="chocolateyhelpers.extension" />
+    </dependencies>
+  </metadata>
+</package>
