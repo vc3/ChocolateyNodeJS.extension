@@ -13,6 +13,13 @@ properties {
     }
 
     Write-Verbose "OutDir: $outDir"
+
+    $tempDir = Join-Path $env:TEMP $projectName
+    if (-not(Test-Path $tempDir)) {
+        New-Item $tempDir -Type Directory | Out-Null
+    }
+
+    Write-Verbose "TempDir: $tempDir"
 }
 
 task Utils:Help {
