@@ -19,7 +19,7 @@ task UpdateOutput {
     Write-Message "Building module 'ChocolateyNodeJS.extension'..."
     Invoke-ScriptBuild -Name 'ChocolateyNodeJS.extension' -SourcePath "$root\Source" -TargetPath "$root\Output" -Force
 
-    $version = '1.1.2'
+    $version = (Get-Content "$root\Build\version.txt").Trim()
 
     $cmdletDocumentation = ''
 
@@ -55,6 +55,15 @@ task UpdateOutput {
 	$nuspecTemplatePath = Join-Path $root "Build\Templates\$($projectName).nuspec.eps"
 	$nuspecContent = Expand-Template -File $nuspecTemplatePath -Binding $nuspecData
 	($nuspecContent.Trim() -split "`n") -join "`r`n" | Out-File "$($nuspecPath)" -Encoding UTF8
+
+    Write-Message "Setting version in 'ChocolateyNodeJS.extension.psd1'..."
+    ((Get-Content "$root\Output\ChocolateyNodeJS.extension.psd1" | foreach {
+        if ($_ -match "^ModuleVersion = '(.*)'$") {
+            $_ -replace "^ModuleVersion = '(.*)'$", "ModuleVersion = '$($version)'"
+        } else {
+            $_
+        }
+    }) -join "`r`n") | Out-File "$root\Output\ChocolateyNodeJS.extension.psd1" -Encoding UTF8
 
     Write-Message "Generating 'README.md' from template..."
     $readmeData = @{cmdletDocumentation=$cmdletDocumentation;releaseNotes=$releaseNotes}
