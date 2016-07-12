@@ -16,10 +16,17 @@ task EnsureApiKey {
 }
 
 task UpdateOutput {
+    $version = (Get-Content "$root\Build\version.txt").Trim()
+    if ($version -match '-') {
+        $isPrerelease = $true
+        $versionNumber = [System.Version]::Parse($version.Split('-')[0])
+    } else {
+        $isPrerelease = $false
+        $versionNumber = [System.Version]::Parse($version)
+    }
+
     Write-Message "Building module 'ChocolateyNodeJS.extension'..."
     Invoke-ScriptBuild -Name 'ChocolateyNodeJS.extension' -SourcePath "$root\Source" -TargetPath "$root\Output" -Force
-
-    $version = (Get-Content "$root\Build\version.txt").Trim()
 
     $cmdletDocumentation = ''
 
@@ -42,9 +49,12 @@ task UpdateOutput {
                 $releaseNotes += "$_"
             }
         } elseif ($isInVersion -eq $null) {
-            if ($_.StartsWith("## [$($version)]")) {
+            if (-not($isPreRelease) -and $_.StartsWith("## [$($versionNumber)]")) {
                 $isInVersion = $true
-                $releaseNotes += "## [$($version)]"
+                $releaseNotes += "## [$($versionNumber)]"
+            } elseif ($isPreRelease -and $_.StartsWith("## Unreleased")) {
+                $isInVersion = $true
+                $releaseNotes += "## [$($versionNumber)]"
             }
         }
     }
@@ -59,7 +69,7 @@ task UpdateOutput {
     Write-Message "Setting version in 'ChocolateyNodeJS.extension.psd1'..."
     ((Get-Content "$root\Output\ChocolateyNodeJS.extension.psd1" | foreach {
         if ($_ -match "^ModuleVersion = '(.*)'$") {
-            $_ -replace "^ModuleVersion = '(.*)'$", "ModuleVersion = '$($version)'"
+            $_ -replace "^ModuleVersion = '(.*)'$", "ModuleVersion = '$($versionNumber)'"
         } else {
             $_
         }

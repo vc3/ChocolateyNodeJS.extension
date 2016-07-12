@@ -7,7 +7,7 @@ A Chocolatey helper extension for installing Node.js applications.
 
 ### Install-ChocolateyNodeApplication
 
-Installs a node application from the 'content' folder of a Chocolatey package.
+Installs a node application found in the 'content' folder of a Chocolatey package.
 
 * Copies files from the package's "**content**" folder.
 	- Files are copied to the install `Path`.
@@ -48,9 +48,57 @@ Install-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp -ExcludedDirectories 'd
 ```
 
 Installs the application using the specified options.    
+### Install-ChocolateyNodeWebsite
+
+Installs a node website found in the 'content' folder of a Chocolatey package and hosts in iisnode.
+
+* Stops the existing website (if `-StopSite` is specified).
+* Calls `Install-ChocolateyNodeApplication` to copy the relevant application files.
+* Creates a default 'iisnode.yml' config file if one does not exist (first-time install).
+* Creates the 'web.config' file.
+* Creates and/or starts the website.
+
+Both 'Name' and 'Port' are required (though, 'Port' may be specified in 'package.json').
+
+These parameters have default values, so they are optional.
+
+* `Path`: C:\\inetpub\\{Name}
+* `StartScript`: server.js
+* `ExcludedDirectories`: 'node_modules' *(restored via `npm install`)*
+* `ExcludedFiles`: *.excluded
+* `CopyMode`: Preserve
+
+The defaults can be overridden in **package.json**.
+
+```json
+  "install": {
+    "path": "C:\\inetpub\\node\\MySite",
+    "copyMode": "preserve",
+    "excludedDirectories": "node_modules",
+    "excludedFiles": "iisnode.yml",
+    "startScript": "main.js",
+    "port": 8080
+  }
+```
+
+Finally, specified parameters take precedence.
+
+**Examples:**
+
+```PowerShell
+Install-ChocolateyNodeWebsite 'MySite'
+```
+
+Installs the website using options in 'package.json', supplemented with the default options.    
+
+```PowerShell
+Install-ChocolateyNodeApplication 'MySite' -Port 80 -Path D:\MySite -ExcludedDirectories 'data' -ExcludedFiles '*.log' -CopyMode 'Purge'
+```
+
+Installs the website using the specified options.    
 ### Uninstall-ChocolateyNodeApplication
 
-Uninstalls a node application from the 'content' folder of a Chocolatey package.
+Uninstalls a node application found in the 'content' folder of a Chocolatey package.
 
 * Removes files that were copied from the package's "**content**" folder.
 	- Files are removed from the install `Path`.
@@ -82,15 +130,49 @@ Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
 ```
 
 Uninstalls the application using the specified options.    
+### Uninstall-ChocolateyNodeWebsite
+
+Uninstalls a node website found in the 'content' folder of a Chocolatey package.
+
+* Stops and removes the existing site and app pool.
+* Calls `Uninstall-ChocolateyNodeApplication` to remove the website files.
+
+These parameters have default values, so they are optional.
+
+* `Path`: C:\\inetpub\\{Name}
+
+The defaults can be overridden in **package.json**.
+
+```json
+  "install": {
+    "path": "C:\\inetpub\\node\\MySite"
+  }
+```
+
+Finally, specified parameters take precedence.
+
+**Examples:**
+
+```PowerShell
+Uninstall-ChocolateyNodeWebsite 'MySite'
+```
+
+Uninstalls the website using options in 'package.json', supplemented with the default options.    
+
+```PowerShell
+Uninstall-ChocolateyNodeApplication 'MySite' -Path D:\MySite
+```
+
+Uninstalls the website using the specified options.    
 
 
 ## Release Notes
 
-### [1.1.2]
+### [1.2.0.1]
 
-#### Changed
+#### Added
 
-- In `Uninstall-ChocolateyNodeApplication`, fix bug in folder deletion.
+- Added `Install-ChocolateyNodeWebsite` and `Uninstall-ChocolateyNodeWebsite`.
 
 
 For previous releases, see the [ChangeLog](ChangeLog.md).

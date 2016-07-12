@@ -1,6 +1,7 @@
 <#
 .SYNOPSIS
-Uninstalls a node application from the 'content' folder of a Chocolatey package.
+
+Uninstalls a node application found in the 'content' folder of a Chocolatey package.
 
 .DESCRIPTION
 
@@ -34,16 +35,22 @@ PS> Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
 Uninstalls the application using the specified options.
 
 #>
-[CmdletBinding()]
+[CmdletBinding(PositionalBinding=$false)]
 param(
-    [Parameter(Mandatory=$true, Position=0, HelpMessage="The name of the node application.")]
+    # The name of the node application.
+    [Parameter(Mandatory=$true, Position=0, HelpMessage="Enter the name of the Node.js application.")]
     [string]$Name,
 
-    [Parameter(Mandatory=$false, HelpMessage="The path to remove the application from, defaults to 'C:\ProgramData\{Name}'.")]
+    # The path to remove the application from, defaults to 'C:\ProgramData\{Name}'.
+    [Parameter(Mandatory=$false)]
     [string]$Path,
 
-    [Parameter(Mandatory=$false, HelpMessage='The package command (install/uninstall) script path.')]
-    [string]$CommandPath=$MyInvocation.PSCommandPath
+    # The package command (install/uninstall) script path.
+    [Parameter(Mandatory=$false)]
+    [string]$CommandPath=$MyInvocation.PSCommandPath,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$SuppressConfirmationMessage
 )
 
 Write-Host "Uninstalling node application '$($Name)'..."
@@ -87,4 +94,6 @@ if (Test-Path $Path) {
     Remove-Item $Path -Recurse -Force | Out-Null
 }
 
-Write-Host "Application uninstall complete."
+if (-not($SuppressConfirmationMessage.IsPresent)) {
+    Write-Host "Application uninstall complete."
+}

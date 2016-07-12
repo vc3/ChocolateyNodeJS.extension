@@ -70,24 +70,36 @@ task Choco:BuildPackages {
             $pkgXml = [xml](Get-Content $_.FullName)
             if ($pkgXml.package.metadata.version -eq '$version$') {
                 if (Test-Path (Join-Path $pkgFolder "$($pkgId).version")) {
-                    $pkgLocalVersion = [Version]::Parse((Get-Content (Join-Path $pkgFolder "$($pkgId).version")).Trim())
+                    $pkgLocalVersionText = (Get-Content (Join-Path $pkgFolder "$($pkgId).version")).Trim()
                 } else {
                     Write-Error "Cannot determine local version of package '$($pkgId)'."
                     return
                 }
             } else {
-                try {
-                    $pkgLocalVersion = [Version]::Parse($pkgXml.package.metadata.version)
-                } catch {
-                    Write-Error "Unable to parse version text '$($pkgXml.package.metadata.version)'."
-                    return
-                }
+                    $pkgLocalVersionText = $pkgXml.package.metadata.version
             }
+
+            try {
+                if ($pkgLocalVersionText -match '-') {
+                    $pkgLocalVersion = [System.Version]::Parse($pkgLocalVersionText.Substring(0, $pkgLocalVersionText.IndexOf('-')))
+                } else {
+                    $pkgLocalVersion = [System.Version]::Parse($pkgLocalVersionText)
+                }
+            } catch {
+                Write-Error "Unable to parse version text '$($pkgXml.package.metadata.version)'."
+                return
+            }
+
             Write-Message "Local version of '$($pkgId)' is v$($pkgLocalVersion)."
             Write-Message "Attempting to find latest version of '$($pkgId)'..."
-            $pkgLatestVersion = Get-ChocoLatestVersion -PackageId $pkgId -Source $chocoPullSource -ErrorAction SilentlyContinue
-            if ($pkgLatestVersion) {
-                Write-Message "Latest version of '$($pkgId)' is v$($pkgLatestVersion)."
+            $pkgLatestVersionText = Get-ChocoLatestVersion -PackageId $pkgId -Source $chocoPullSource -ErrorAction SilentlyContinue
+            if ($pkgLatestVersionText -match '-') {
+                $pkgLatestVersion = [System.Version]::Parse($pkgLatestVersionText.Substring(0, $pkgLatestVersionText.IndexOf('-')))
+            } else {
+                $pkgLatestVersion = [Version]::Parse($pkgLatestVersionText)
+            }
+            if ($pkgLatestVersionText) {
+                Write-Message "Latest version of '$($pkgId)' is v$($pkgLatestVersionText)."
                 if ($pkgLocalVersion -eq $pkgLatestVersion) {
                     Write-Message "No update to package - not building."
                     $shouldBuild = $false
@@ -104,8 +116,7 @@ task Choco:BuildPackages {
             }
             if ($shouldBuild) {
                 Write-Message "Running pack command on '$($_.FullName)'..."
-
-                $pkgFile = New-ChocoPackage -NuspecFile $_.FullName -Version $pkgLocalVersion -Force
+                $pkgFile = New-ChocoPackage -NuspecFile $_.FullName -Version $pkgLocalVersionText -Force
                 Write-Message "Created package file '$($pkgFile)'."
                 if ($chocoOutDir) {
                     $pkgDest = $chocoOutDir

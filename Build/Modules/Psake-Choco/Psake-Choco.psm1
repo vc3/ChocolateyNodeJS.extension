@@ -6,10 +6,12 @@ function Get-ChocoLatestVersion {
         [Parameter(Mandatory = $true, Position = 0)]
         [string]$PackageId,
 
-        [string]$Source
+        [string]$Source,
+
+        [switch]$AsObject
     )
 
-    Write-Verbose "Running command ``Get-ChocoLatestVersion -PackageId '$($PackageId)'``..."
+    Write-Verbose "Running command ``Get-ChocoLatestVersion -PackageId '$($PackageId)'$(if($AsObject.IsPresent){'-AsObject'})``..."
 
     if ($chocoFile) {
         $choco = $chocoFile
@@ -37,10 +39,32 @@ function Get-ChocoLatestVersion {
 
     if ($upgradeOutput -match $availableVersionExpr) {
         Write-Verbose "Output matches available version expression."
-        return [Version]::Parse(($upgradeOutput -replace $availableVersionExpr, '$1'))
+        $version = $upgradeOutput -replace $availableVersionExpr, '$1'
+        if ($AsObject.IsPresent) {
+            $versionText = $version
+            if ($versionText -match '-') {
+                $version = [System.Version]::Parse($versionText.Substring(0, $versionText.IndexOf('-')))
+            } else {
+                $version = [System.Version]::Parse($version)
+            }
+            return $version
+        } else {
+            return $version
+        }
     } elseif ($upgradeOutput -match $installingVersionExpr) {
         Write-Verbose "Output matches installing version expression."
-        return [Version]::Parse(($upgradeOutput -replace $installingVersionExpr, '$1'))
+        $version = $upgradeOutput -replace $installingVersionExpr, '$1'
+        if ($AsObject.IsPresent) {
+            $versionText = $version
+            if ($versionText -match '-') {
+                $version = [System.Version]::Parse($versionText.Substring(0, $versionText.IndexOf('-')))
+            } else {
+                $version = [System.Version]::Parse($version)
+            }
+            return $version
+        } else {
+            return $version
+        }
     } else {
         Write-Verbose "Output did not match any expected format."
         Write-Error "Could not determine latest version of package '$($PackageId)'."
@@ -54,12 +78,12 @@ function New-ChocoPackage {
         [string]$NuspecFile,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [System.Version]$Version,
+        [string]$Version,
 
         [switch]$Force
     )
 
-    Write-Verbose "Running command ``New-ChocoPackage -NuspecFile '$($NuspecFile)'``..."
+    Write-Verbose "Running command ``New-ChocoPackage -NuspecFile '$($NuspecFile)'$(if($Version){' -Version '''+$Version+''''})``..."
 
     if ($chocoFile) {
         $choco = $chocoFile
@@ -81,13 +105,29 @@ function New-ChocoPackage {
     $pkgId = $pkgXml.package.metadata.id
 
     if ($Version) {
-        $pkgVersion = $Version.ToString()
+        $pkgVersion = $Version
     } elseif ($pkgXml.package.metadata.version -eq '$version$') {
         Write-Error "Version must be specified for package '$($pkgId)'."
         return
     } else {
+        $pkgVersionText = $pkgXml.package.metadata.version
         try {
-            $pkgVersion = [Version]::Parse($pkgXml.package.metadata.version)
+            # Ensure that the version is a valid version number
+            if ($pkgVersionText -match '-') {
+                $pkgVersion = [System.Version]::Parse($pkgVersionText.Substring(0, $pkgVersionText.IndexOf('-')))
+                $pkgPrereleaseFlag = $pkgVersionText.Substring($pkgVersionText.IndexOf('-') + 1)
+            } else {
+                $pkgVersion = [Version]::Parse($pkgXml.package.metadata.version)
+                $pkgPrereleaseFlag = $null
+            }
+
+            # Re-append pre-release flag
+            $pkgVersionText = $pkgVersion.ToString()
+            if ($pkgPrereleaseFlag) {
+                $pkgVersionText += "-$($pkgPrereleaseFlag)"
+            }
+
+            $pkgVersion = $pkgVersionText
         } catch {
             Write-Error "Unable to parse version text '$($pkgXml.package.metadata.version)'."
             return

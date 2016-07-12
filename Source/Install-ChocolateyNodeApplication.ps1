@@ -1,8 +1,10 @@
 <#
 .SYNOPSIS
-Installs a node application from the 'content' folder of a Chocolatey package.
+
+Installs a node application found in the 'content' folder of a Chocolatey package.
 
 .DESCRIPTION
+
 * Copies files from the package's "**content**" folder.
 	- Files are copied to the install `Path`.
 	- Optional exclusion based on `ExcludedDirectories` and `ExcludedFiles`.
@@ -42,26 +44,35 @@ PS> Install-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp -ExcludedDirectorie
 Installs the application using the specified options.
 
 #>
-[CmdletBinding()]
+[CmdletBinding(PositionalBinding=$false)]
 param(
+    # The name of the node application.
     [Parameter(Mandatory=$true, Position=0, HelpMessage="Enter the name of the Node.js application.")]
     [string]$Name,
 
-    [Parameter(Mandatory=$false, HelpMessage="The path to install the application to, defaults to 'C:\ProgramData\{Name}'.")]
+    # The path to install the application to, defaults to 'C:\ProgramData\{Name}'.
+    [Parameter(Mandatory=$false)]
     [string]$Path,
 
+    # How to handle extra files during upgrade, defaults to 'Preserve'.
     [ValidateSet('Unspecified', 'Preserve', 'Purge')]
-    [Parameter(Mandatory=$false, HelpMessage="How to handle extra files during upgrade, defaults to 'Preserve'.")]
+    [Parameter(Mandatory=$false)]
     [string]$CopyMode='Unspecified',
 
-    [Parameter(Mandatory=$false, HelpMessage="A pattern for directories to exclude, defaults to 'node_modules'.")]
+    # A pattern for directories to exclude, defaults to 'node_modules'.
+    [Parameter(Mandatory=$false)]
     [string]$ExcludedDirectories,
 
-    [Parameter(Mandatory=$false, HelpMessage="A pattern for source files to exclude, defaults to '*.excluded'.")]
+    # A pattern for source files to exclude, defaults to '*.excluded'.
+    [Parameter(Mandatory=$false)]
     [string]$ExcludedFiles,
 
-    [Parameter(Mandatory=$false, HelpMessage='The package command (install/uninstall) script path.')]
-    [string]$CommandPath=$MyInvocation.PSCommandPath
+    # The package command (install/uninstall) script path.
+    [Parameter(Mandatory=$false)]
+    [string]$CommandPath=$MyInvocation.PSCommandPath,
+
+    [Parameter(Mandatory=$false)]
+    [switch]$SuppressConfirmationMessage
 )
 
 Write-Host "Installing node application '$($Name)'..."
@@ -132,4 +143,6 @@ try {
     Pop-Location
 }
 
-Write-Host "Application install complete."
+if (-not($SuppressConfirmationMessage.IsPresent)) {
+    Write-Host "Application install complete."
+}
