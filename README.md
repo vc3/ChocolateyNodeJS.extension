@@ -1,17 +1,10 @@
-﻿<?xml version="1.0"?>
-<package>
-  <metadata>
-    <id>ChocolateyNodeJS.extension</id>
-    <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
-    <version>1.1.2</version>
-    <authors>Bryan Matthews</authors>
-    <owners>Bryan Matthews</owners>
-    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>https://github.com/vc3/ChocolateyNodeJS.extension</projectUrl>
-    <iconUrl>https://github.com/chocolatey/chocolatey/raw/master/docs/logo/chocolateyicon.gif</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A Chocolatey helper extension for installing Node.js applications.
+﻿ChocolateyNodeJS.extension (Chocolatey Extension)
+=================================================
+
+A Chocolatey helper extension for installing Node.js applications.
+
 ## Commands
+
 ### Install-ChocolateyNodeApplication
 
 Installs a node application from the 'content' folder of a Chocolatey package.
@@ -90,15 +83,14 @@ Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
 
 Uninstalls the application using the specified options.    
 
-</description>
-    <releaseNotes>
-## [1.1.2]
-### Changed
+
+## Release Notes
+
+### [1.1.2]
+
+#### Changed
+
 - In `Uninstall-ChocolateyNodeApplication`, fix bug in folder deletion.
-</releaseNotes>
-    <dependencies>
-      <dependency id="chocolatey" version="0.9.9" />
-      <dependency id="chocolateyhelpers.extension" />
-    </dependencies>
-  </metadata>
-</package>
+
+
+For previous releases, see the [ChangeLog](ChangeLog.md).

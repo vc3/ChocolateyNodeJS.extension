@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>ChocolateyNodeJS.extension</id>
+    <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
+    <version><%= $version %></version>
+    <authors>Bryan Matthews</authors>
+    <owners>Bryan Matthews</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/vc3/ChocolateyNodeJS.extension</projectUrl>
+    <iconUrl>https://github.com/chocolatey/chocolatey/raw/master/docs/logo/chocolateyicon.gif</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A Chocolatey helper extension for installing Node.js applications.
+## Commands
+<%= $cmdletDocumentation %>
+</description>
+    <releaseNotes>
+<%= $releaseNotes -join "`n" %>
+</releaseNotes>
+    <dependencies>
+      <dependency id="chocolatey" version="0.9.9" />
+      <dependency id="chocolateyhelpers.extension" />
+    </dependencies>
+  </metadata>
+</package>

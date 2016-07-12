@@ -1,3 +1,39 @@
+<#
+.SYNOPSIS
+Uninstalls a node application from the 'content' folder of a Chocolatey package.
+
+.DESCRIPTION
+
+* Removes files that were copied from the package's "**content**" folder.
+	- Files are removed from the install `Path`.
+
+These parameters have default values, so they are optional.
+
+* `Path`: C:\\ProgramData\\{Name}
+
+The defaults can be overridden in **package.json**.
+
+```json
+  "install": {
+    "path": "C:\\ProgramData\\NodeApps\\MyApp"
+  }
+```
+
+Finally, specified parameters take precedence.
+
+.EXAMPLE
+
+PS> Uninstall-ChocolateyNodeApplication 'MyApp'
+
+Uninstalls the application using options in 'package.json', supplemented with the default options.
+
+.EXAMPLE
+
+PS> Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
+
+Uninstalls the application using the specified options.
+
+#>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true, Position=0, HelpMessage="The name of the node application.")]
