@@ -167,7 +167,7 @@ Install-ChocolateyNodeApplication `
 $ymlConfigFile = Join-Path $Path 'iisnode.yml'
 if (-not(Test-Path $ymlConfigFile)) {
     Write-Host "Copying default yml file..."
-    Copy-Item (Join-Path "$($packageDir)\content" 'iisnode.yml') $ymlConfigFile | Out-Null
+    Copy-Item (Join-Path "$($moduleContentDir)\content" 'iisnode.yml') $ymlConfigFile | Out-Null
 }
 
 # Create a simple, managed web.config. This should not be edited. Customizations should be made in 'iisnode.yml' instead.

@@ -12,7 +12,7 @@
 RootModule = 'ChocolateyNodeJS.extension.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.2.0.3'
+ModuleVersion = '1.2.0.4'
 
 # ID used to uniquely identify this module
 GUID = 'ad661b74-80b3-9c03-e088-227cadc384e8'

@@ -168,11 +168,11 @@ Uninstalls the website using the specified options.
 
 ## Release Notes
 
-### [1.2.0.3]
+### [1.2.0.4]
 
 #### Fixed
 
-- Fix problem with null Path parameter.
+- Fix problem with incorrect path to 'content' directory.
 
 
 For previous releases, see the [ChangeLog](ChangeLog.md).
