@@ -2,8 +2,12 @@
 All notable changes to this project will be documented in [this file](http://keepachangelog.com/).
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.2.0.3] - 2016-07-13
+### Fixed
+- Fix problem with null Path parameter.
+
 ## [1.2.0.2] - 2016-07-13
-### Added
+### Fixed
 - Fix missing position argument in `Install-ChocolateyNodeWebsite`.
 
 ## [1.2.0.1] - 2016-07-12

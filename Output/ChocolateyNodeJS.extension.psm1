@@ -487,7 +487,7 @@ function Install-ChocolateyNodeWebsite {
 	
 	Import-Module WebAdministration -Force
 	
-	$moduleDir = Split-Path $MyInvocation.MyCommand.Path -Parent
+	$moduleContentDir = Join-Path $PSScriptRoot 'content'
 	
 	Write-Host "Installing node website '$($Name)'..."
 	
@@ -566,7 +566,7 @@ function Install-ChocolateyNodeWebsite {
 	# Create a simple, managed web.config. This should not be edited. Customizations should be made in 'iisnode.yml' instead.
 	# "The optional iisnode.yml file provides overrides of the iisnode configuration settings specified in web.config."
 	# https://github.com/tjanczuk/iisnode/blob/master/src/samples/configuration/iisnode.yml
-	$webConfigContent = Get-Content "$($moduleDir)\content\web.config" -Encoding 'utf8'
+	$webConfigContent = Get-Content "$($moduleContentDir)\content\web.config" -Encoding 'utf8'
 	$webConfigContent | ForEach-Object { $_ -replace '{{StartScript}}', $StartScript } | Out-File "$($Path)\web.config" -Encoding 'utf8'
 	
 	# Start or create the IIS website
