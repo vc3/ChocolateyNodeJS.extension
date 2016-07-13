@@ -168,11 +168,11 @@ Uninstalls the website using the specified options.
 
 ## Release Notes
 
-### [1.2.0.1]
+### [1.2.0.2]
 
 #### Added
 
-- Added `Install-ChocolateyNodeWebsite` and `Uninstall-ChocolateyNodeWebsite`.
+- Fix missing position argument in `Install-ChocolateyNodeWebsite`.
 
 
 For previous releases, see the [ChangeLog](ChangeLog.md).

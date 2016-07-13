@@ -52,7 +52,7 @@ Installs the website using the specified options.
 [CmdletBinding(PositionalBinding=$false)]
 param(
     # The name of the node website.
-    [Parameter(Mandatory=$true, HelpMessage="Enter the name of the Node.js website.")]
+    [Parameter(Mandatory=$true, Position=0, HelpMessage="Enter the name of the Node.js website.")]
     [string]$Name,
 
     # The port number (must be specified if not found in 'package.json').

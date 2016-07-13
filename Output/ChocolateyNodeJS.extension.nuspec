@@ -3,7 +3,7 @@
   <metadata>
     <id>ChocolateyNodeJS.extension</id>
     <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
-    <version>1.2.0.1</version>
+    <version>1.2.0.2</version>
     <authors>Bryan Matthews</authors>
     <owners>Bryan Matthews</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
@@ -174,9 +174,9 @@ Uninstalls the website using the specified options.
 
 </description>
     <releaseNotes>
-## [1.2.0.1]
+## [1.2.0.2]
 ### Added
-- Added `Install-ChocolateyNodeWebsite` and `Uninstall-ChocolateyNodeWebsite`.
+- Fix missing position argument in `Install-ChocolateyNodeWebsite`.
 </releaseNotes>
     <dependencies>
       <dependency id="chocolatey" version="0.9.9" />
