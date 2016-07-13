@@ -3,7 +3,7 @@
   <metadata>
     <id>ChocolateyNodeJS.extension</id>
     <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
-    <version>1.2.0.4</version>
+    <version>1.2.0.5</version>
     <authors>Bryan Matthews</authors>
     <owners>Bryan Matthews</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
@@ -174,9 +174,9 @@ Uninstalls the website using the specified options.
 
 </description>
     <releaseNotes>
-## [1.2.0.4]
+## [1.2.0.5]
 ### Fixed
-- Fix problem with incorrect path to 'content' directory.
+- Fix problem with incorrect path to 'content' directory (again).
 </releaseNotes>
     <dependencies>
       <dependency id="chocolatey" version="0.9.9" />

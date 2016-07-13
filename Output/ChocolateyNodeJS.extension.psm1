@@ -560,13 +560,13 @@ function Install-ChocolateyNodeWebsite {
 	$ymlConfigFile = Join-Path $Path 'iisnode.yml'
 	if (-not(Test-Path $ymlConfigFile)) {
 	    Write-Host "Copying default yml file..."
-	    Copy-Item (Join-Path "$($moduleContentDir)\content" 'iisnode.yml') $ymlConfigFile | Out-Null
+	    Copy-Item (Join-Path $moduleContentDir 'iisnode.yml') $ymlConfigFile | Out-Null
 	}
 	
 	# Create a simple, managed web.config. This should not be edited. Customizations should be made in 'iisnode.yml' instead.
 	# "The optional iisnode.yml file provides overrides of the iisnode configuration settings specified in web.config."
 	# https://github.com/tjanczuk/iisnode/blob/master/src/samples/configuration/iisnode.yml
-	$webConfigContent = Get-Content "$($moduleContentDir)\content\web.config" -Encoding 'utf8'
+	$webConfigContent = Get-Content "$($moduleContentDir)\web.config" -Encoding 'utf8'
 	$webConfigContent | ForEach-Object { $_ -replace '{{StartScript}}', $StartScript } | Out-File "$($Path)\web.config" -Encoding 'utf8'
 	
 	# Start or create the IIS website
