@@ -1,5 +1,3 @@
-### <%= [System.IO.Path]::GetFileNameWithoutExtension($cmdletPath) %>
-
 <%= $cmdletHelp.Synopsis %>
 
 <%= $cmdletHelp.Description.Text %>

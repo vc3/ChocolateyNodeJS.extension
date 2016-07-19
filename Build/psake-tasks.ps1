@@ -28,14 +28,23 @@ task UpdateOutput {
     Write-Message "Building module 'ChocolateyNodeJS.extension'..."
     Invoke-ScriptBuild -Name 'ChocolateyNodeJS.extension' -SourcePath "$root\Source" -TargetPath "$root\Output" -Force
 
-    $cmdletDocumentation = ''
+    $cmdletNames = @()
+    $cmdletFiles = @()
+    $cmdletDocs = @{}
+    $cmdletSummaries = @{}
 
     Get-ChildItem "$root\Source" -Filter *.ps1 | foreach {
-        $cmdletPath = $_.FullName
-        $cmdletHelp = Get-Help $cmdletPath
-        $cmdletData = @{cmdletPath=$cmdletPath;cmdletHelp=$cmdletHelp}
-        $cmdletTemplatePath = Join-Path $root "Build\Templates\CmdletDocumentation.md.eps"
-        $cmdletDocumentation += Expand-Template -File $cmdletTemplatePath -Binding $cmdletData
+        $cmdletFile = $_.FullName
+        $cmdletName = [IO.Path]::GetFileNameWithoutExtension($cmdletFile)
+        $cmdletHelp = Get-Help $cmdletFile
+        $cmdletData = @{cmdletName=$cmdletName;cmdletFile=$cmdletFile;cmdletHelp=$cmdletHelp}
+        $cmdletTemplateFile = Join-Path $root "Build\Templates\CmdletDocumentation.md"
+        $cmdletDocumentation = Expand-Template -File $cmdletTemplateFile -Binding $cmdletData
+
+        $cmdletNames += $cmdletName
+        $cmdletFiles += $cmdletFile
+        $cmdletDocs[$cmdletName] = $cmdletDocumentation
+        $cmdletSummaries[$cmdletName] = $cmdletHelp.Synopsis
     }
 
     $releaseNotes = @()
@@ -59,12 +68,13 @@ task UpdateOutput {
         }
     }
 
+    $pkgData = @{version=$version;cmdletNames=$cmdletNames;cmdletFiles=$cmdletFiles;cmdletSummaries=$cmdletSummaries;cmdletDocs=$cmdletDocs;releaseNotes=$releaseNotes}
+
     Write-Message "Generating 'ChocolateyNodeJS.extension.nuspec' from template..."
-    $nuspecData = @{version=$version;cmdletDocumentation=$cmdletDocumentation;releaseNotes=$releaseNotes}
-	$nuspecPath = Join-Path $root "Output\$($projectName).nuspec"
-	$nuspecTemplatePath = Join-Path $root "Build\Templates\$($projectName).nuspec.eps"
-	$nuspecContent = Expand-Template -File $nuspecTemplatePath -Binding $nuspecData
-	($nuspecContent.Trim() -split "`n") -join "`r`n" | Out-File "$($nuspecPath)" -Encoding UTF8
+	$nuspecFile = Join-Path $root "Output\$($projectName).nuspec"
+	$nuspecTemplateFile = Join-Path $root "Build\Templates\ChocolateyPackage.nuspec"
+	$nuspecContent = Expand-Template -File $nuspecTemplateFile -Binding $pkgData
+	($nuspecContent.Trim() -split "`n") -join "`r`n" | Out-File "$($nuspecFile)" -Encoding UTF8
 
     Write-Message "Setting version in 'ChocolateyNodeJS.extension.psd1'..."
     ((Get-Content "$root\Output\ChocolateyNodeJS.extension.psd1" | foreach {
@@ -75,12 +85,11 @@ task UpdateOutput {
         }
     }) -join "`r`n") | Out-File "$root\Output\ChocolateyNodeJS.extension.psd1" -Encoding UTF8
 
-    Write-Message "Generating 'README.md' from template..."
-    $readmeData = @{cmdletDocumentation=$cmdletDocumentation;releaseNotes=$releaseNotes}
-	$readmePath = Join-Path $root "README.md"
-	$readmeTemplatePath = Join-Path $root "Build\Templates\README.md.eps"
-	$readmeContent = Expand-Template -File $readmeTemplatePath -Binding $readmeData
-	($readmeContent.Trim() -split "`n") -join "`r`n" | Out-File "$($readmePath)" -Encoding UTF8
+    Write-Message "Generating 'ChocolateyNodeJS.extension.md' from template..."
+	$documentationFile = Join-Path $root "Output\$($projectName).md"
+	$documentationTemplateFile = Join-Path $root "Build\Templates\ModuleDocumentation.md"
+	$documentationContent = Expand-Template -File $documentationTemplateFile -Binding $pkgData
+	($documentationContent.Trim() -split "`n") -join "`r`n" | Out-File "$($documentationFile)" -Encoding UTF8
 }
 
 task Build -depends EnsureApiKey,UpdateOutput,Choco:BuildPackages

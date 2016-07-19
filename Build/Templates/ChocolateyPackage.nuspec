@@ -12,7 +12,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A Chocolatey helper extension for installing Node.js applications.
 ## Commands
-<%= $cmdletDocumentation %>
+<% foreach ($cmdletName in $cmdletNames) { %>
+### <%= $cmdletName %>
+
+<%= $cmdletDocs[$cmdletName] %>
+<% } %>
 </description>
     <releaseNotes>
 <%= $releaseNotes -join "`n" %>

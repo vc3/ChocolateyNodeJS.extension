@@ -397,7 +397,7 @@ function Install-ChocolateyNodeWebsite {
 	<#
 	.SYNOPSIS
 	
-	Installs a node website found in the 'content' folder of a Chocolatey package and hosts in iisnode.
+	Installs a node website found in the 'content' folder of a Chocolatey package and hosts in IIS via iisnode.
 	
 	.DESCRIPTION
 	

@@ -1,18 +1,7 @@
-﻿<?xml version="1.0"?>
-<package>
-  <metadata>
-    <id>ChocolateyNodeJS.extension</id>
-    <title>ChocolateyNodeJS.extension (Chocolatey Extension)</title>
-    <version>1.2.1</version>
-    <authors>Bryan Matthews</authors>
-    <owners>Bryan Matthews</owners>
-    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>https://github.com/vc3/ChocolateyNodeJS.extension</projectUrl>
-    <iconUrl>https://github.com/chocolatey/chocolatey/raw/master/docs/logo/chocolateyicon.gif</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A Chocolatey helper extension for installing Node.js applications.
-## Commands
-### Install-ChocolateyNodeApplication
+﻿Commands
+========
+
+## Install-ChocolateyNodeApplication
 
 Installs a node application found in the 'content' folder of a Chocolatey package.
 
@@ -56,7 +45,7 @@ Install-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp -ExcludedDirectories 'd
 
 Installs the application using the specified options.    
 
-### Install-ChocolateyNodeWebsite
+## Install-ChocolateyNodeWebsite
 
 Installs a node website found in the 'content' folder of a Chocolatey package and hosts in IIS via iisnode.
 
@@ -105,7 +94,7 @@ Install-ChocolateyNodeApplication 'MySite' -Port 80 -Path D:\MySite -ExcludedDir
 
 Installs the website using the specified options.    
 
-### Uninstall-ChocolateyNodeApplication
+## Uninstall-ChocolateyNodeApplication
 
 Uninstalls a node application found in the 'content' folder of a Chocolatey package.
 
@@ -140,7 +129,7 @@ Uninstall-ChocolateyNodeApplication 'MyApp' -Path D:\MyApp
 
 Uninstalls the application using the specified options.    
 
-### Uninstall-ChocolateyNodeWebsite
+## Uninstall-ChocolateyNodeWebsite
 
 Uninstalls a node website found in the 'content' folder of a Chocolatey package.
 
@@ -173,17 +162,4 @@ Uninstalls the website using options in 'package.json', supplemented with the de
 Uninstall-ChocolateyNodeApplication 'MySite' -Path D:\MySite
 ```
 
-Uninstalls the website using the specified options.    
-
-</description>
-    <releaseNotes>
-## [1.2.1]
-### Added
-- Added `Install-ChocolateyNodeWebsite` and `Uninstall-ChocolateyNodeWebsite`.
-</releaseNotes>
-    <dependencies>
-      <dependency id="chocolatey" version="0.9.9" />
-      <dependency id="chocolateyhelpers.extension" />
-    </dependencies>
-  </metadata>
-</package>
+Uninstalls the website using the specified options.
